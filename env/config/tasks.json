@@ -120,6 +120,10 @@
         ]
     },
     "purecss": {
+        "nodePath" : "node_modules",
+        "prefix" : "grid",
+        "columnHasPrefix" : false,
+        "columnPrefix": "col",
         "breakpoints": {
             "xs": "screen and (min-width: 30em)",
             "sm": "screen and (min-width: 48em)",
@@ -127,7 +131,8 @@
             "lg": "screen and (min-width: 75em)"
         },
         "files": {
-            "dest": "./src/css/generated/"
+            "dest": "./src/css/generated/",
+            "src" : ["base-min", "grids-core-min"]
         }
     },
     "sitemap": {

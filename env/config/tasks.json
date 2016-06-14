@@ -1,216 +1,217 @@
 {
-    "clean": {
-        "subtasks": [
-            {
-                "name": "default",
-                "files": {
-                    "dest": "<%= destination %>"
-                }
-            }
-        ]
+  "clean": {
+    "subtasks": [{
+      "name": "default",
+      "files": {
+        "dest": "<%= destination %>"
+      }
+    }]
+  },
+  "copy": {
+    "subtasks": [{
+      "name": "default",
+      "files": {
+        "src": ["./src/assets/**/*.{ttf,woff,eof,svg,ico,png,jpg,gif}"],
+        "dest": "<%= destination %>/assets"
+      }
+    }],
+    "watch": [{
+      "src": ["src/assets/**/*.{ttf,woff,eof,svg,ico,png,jpg,gif}"],
+      "tasks": ["default"]
+    }]
+  },
+  "handlebars": {
+    "assets": "<%= destination %>/assets/",
+    "layouts": "./src/tmpl/partials/layouts/**/*.hbs",
+    "partials": ["./src/tmpl/partials/**/*.hbs"],
+    "scripts": {
+      "js": {
+        "main": "<%= destination %>/js/app.js",
+        "embed": "<%= destination %>/js/embed.js"
+      },
+      "css": {
+        "main": "<%= destination %>/css/style.css",
+        "critical": "<%= destination %>/css/critical.css"
+      }
     },
-    "copy": {
-        "subtasks": [
-            {
-                "name": "default",
-                "files": {
-                    "src": ["./src/assets/**/*.{ttf,woff,eof,svg,ico,png,jpg,gif}"],
-                    "dest": "<%= destination %>/assets"
-                }
-            }
-        ],
-        "watch": [
-            {
-                "src": ["src/assets/**/*.{ttf,woff,eof,svg,ico,png,jpg,gif}"],
-                "tasks": ["default"]
-            }
-        ]
+    "subtasks": [{
+      "name": "pages",
+      "layout": "layouts/default",
+      "files": {
+        "src": ["./src/tmpl/**/*.hbs", "!./src/tmpl/partials/**/*.hbs"],
+        "dest": "<%= destination %>"
+      },
+      "data": {
+        "cwd": "./src/data/",
+        "src": "./**/*.{json,yaml}"
+      }
+    }, {
+      "name": "partials",
+      "layout": "layouts/documentation",
+      "files": {
+        "src": ["./src/tmpl/partials/**/*.hbs", "!./src/tmpl/partials/common/**/*.hbs", "!./src/tmpl/partials/layouts/**/*.hbs"],
+        "dest": "<%= destination %>/partials"
+      }
+    }],
+    "watch": [{
+      "src": ["src/tmpl/**/*.hbs", "src/data/**/*.json"]
+    }]
+  },
+  "postcss": {
+    "subtasks": [{
+      "name": "default",
+      "sourcemap": true,
+      "plugins": [{
+        "name": "postcss-import",
+        "params": []
+      }, {
+        "name": "precss",
+        "params": []
+      }, {
+        "name": "postcss-calc",
+        "params": []
+      }, {
+        "name": "postcss-clearfix",
+        "params": []
+      }, {
+        "name": "autoprefixer",
+        "params": [{
+          "browsers": ["> 2%", "last 2 versions", "IE 9", "Firefox ESR"]
+        }]
+      }, {
+        "name": "postcss-discard-comments",
+        "params": []
+      }, {
+        "name": "cssnano",
+        "params": []
+      }],
+      "files": {
+        "src": ["./src/css/style.css", "./src/css/critical.css"],
+        "dest": "<%= destination %>/css"
+      }
+    }],
+    "watch": [{
+      "src": ["src/css/**/*.css"]
+    }]
+  },
+  "purecss": {
+    "prefix": "grid",
+    "columnHasPrefix": true,
+    "columns": 12,
+    "gutterWidth": "0.9375rem",
+    "columnPrefix": "col",
+    "wrapperBreakpoints": ["md", "lg"],
+    "breakpoints": {
+      "xs": "30em",
+      "sm": "48em",
+      "md": "62em",
+      "lg": "75em"
     },
-    "handlebars": {
-        "assets": "<%= destination %>/assets/",
-        "layouts": "./src/tmpl/partials/layouts/**/*.hbs",
-        "partials": ["./src/tmpl/partials/**/*.hbs"],
-        "scripts": {
-            "js": {
-                "main": "<%= destination %>/js/app.js",
-                "embed": "<%= destination %>/js/embed.js"
-            },
-            "css": {
-                "main": "<%= destination %>/css/style.css",
-                "critical": "<%= destination %>/css/critical.css"
-            }
-        },
-        "subtasks": [
-            {
-                "name": "pages",
-                "layout": "layouts/default",
-                "files": {
-                    "src": ["./src/tmpl/**/*.hbs", "!./src/tmpl/partials/**/*.hbs"],
-                    "dest": "<%= destination %>"
-                },
-                "data": {
-                    "cwd": "./src/data/",
-                    "src": "./**/*.{json,yaml}"
-                }
-            },
-            {
-                "name": "partials",
-                "layout": "layouts/documentation",
-                "files": {
-                    "src": ["./src/tmpl/partials/**/*.hbs", "!./src/tmpl/partials/common/**/*.hbs", "!./src/tmpl/partials/layouts/**/*.hbs"],
-                    "dest": "<%= destination %>/partials"
-                }
-            }
-        ],
-        "watch": [
-            {
-                "src": ["src/tmpl/**/*.hbs", "src/data/**/*.json"]
-            }
-        ]
-    },
-    "postcss": {
-        "subtasks": [
-            {
-                "name": "default",
-                "sourcemap": true,
-                "plugins": [
-                    {
-                        "name": "postcss-import",
-                        "params": []
-                    },
-                    {
-                        "name": "precss",
-                        "params": []
-                    },
-                    {
-                        "name": "postcss-calc",
-                        "params": []
-                    },
-                    {
-                        "name": "postcss-clearfix",
-                        "params": []
-                    },
-                    {
-                        "name": "autoprefixer",
-                        "params": [
-                            {
-                                "browsers": ["> 2%", "last 2 versions", "IE 9", "Firefox ESR"]
-                            }
-                        ]
-                    },
-                    {
-                        "name": "postcss-discard-comments",
-                        "params": []
-                    },
-                    {
-                        "name": "cssnano",
-                        "params": []
-                    }
-                ],
-                "files": {
-                    "src": ["./src/css/style.css", "./src/css/critical.css"],
-                    "dest": "<%= destination %>/css"
-                }
-            }
-        ],
-        "watch": [
-            {
-                "src": ["src/css/**/*.css"]
-            }
-        ]
-    },
-    "purecss": {
-        "breakpoints": {
-            "xs": "screen and (min-width: 30em)",
-            "sm": "screen and (min-width: 48em)",
-            "md": "screen and (min-width: 62em)",
-            "lg": "screen and (min-width: 75em)"
-        },
-        "files": {
-            "dest": "./src/css/generated/"
-        }
-    },
-    "sitemap": {
-        "subtasks": [
-            {
-                "name": "default",
-                "domain": "http://www.example.com",
-                "files": {
-                    "src": ["<%= destination %>/**/*.html", "!<%= destination %>/partials/**/*.html"],
-                    "dest": "<%= destination %>"
-                }
-            }
-        ]
-    },
-    "webpack": {
-        "subtasks": [
-            {
-                "name": "app",
-                "hotReplacement": true,
-                "plugins": [
-                    {"script": "../webpack/plugins/dedupe"},
-                    {"script": "../webpack/plugins/uglify"}
-                ],
-                "module": {
-                    "preLoaders": [
-                        {
-                            "test": ".js$",
-                            "exclude": "node_modules",
-                            "loader": "jshint-loader"
-                        }
-                    ],
-                    "loaders": [
-                        {
-                            "test": ".hbs$",
-                            "loader": "handlebars-loader"
-                        },
-                        {
-                            "test": ".css$",
-                            "loader": "style-loader!css-loader"
-                        },
-                        {
-                            "test": ".(png|jpg|gif|svg|ttf|woff|eot)$",
-                            "loader": "url-loader?limit=100000"
-                        }
-                    ]
-                },
-                "files": {
-                    "src": ["./src/js/main.js"],
-                    "dest": "<%= destination %>/js/app.js"
-                }
-            },
-            {
-                "name": "embed",
-
-                "entry": {
-                    "picture": "./src/js/polyfills/picture",
-                    "animationFrame": "./src/js/polyfills/animationFrame"
-                },
-
-                "plugins": [
-                    {"script": "../webpack/plugins/dedupe"},
-                    {"script": "../webpack/plugins/chunk", "config": {
-                        "main": "embed._main.js",
-                        "packages": ["picture", "animationFrame"]
-                    }},
-                    {"script": "../webpack/plugins/uglify"}
-                ],
-                "module": {
-                    "preLoaders": [
-                        {
-                            "test": ".js$",
-                            "exclude": "node_modules",
-                            "loader": "jshint-loader"
-                        }
-                    ]
-                },
-                "files": {
-                    "src": ["./src/js/polyfills/animationFrame", "./src/js/polyfills/picture"],
-                    "dest": "<%= destination %>/js/embed.[name].js",
-                    "library": ["window", "[name]"],
-                    "libraryTarget": "this"
-                }
-            }
-        ]
+    "files": {
+      "dest": "./generated/pcss/",
+      "src": ["base", "grids-core"]
     }
+  },
+  "sitemap": {
+    "subtasks": [{
+      "name": "default",
+      "domain": "http://www.example.com",
+      "files": {
+        "src": ["<%= destination %>/**/*.html", "!<%= destination %>/partials/**/*.html"],
+        "dest": "<%= destination %>"
+      }
+    }]
+  },
+  "webpack": {
+    "subtasks": [{
+      "name": "app",
+      "hotReplacement": true,
+      "plugins": [{
+        "script": "../webpack/plugins/dedupe"
+      }, {
+        "script": "../webpack/plugins/uglify"
+      }],
+      "module": {
+        "preLoaders": [{
+          "test": ".js$",
+          "exclude": "node_modules",
+          "loader": "jshint-loader"
+        }],
+        "loaders": [{
+          "test": ".hbs$",
+          "loader": "handlebars-loader",
+          "query": {
+            "exclude": "node_modules",
+            "knownHelpers": ["block", "content"],
+            "helperDirs": [
+              "<%= root %>/src/tmpl/partials"
+            ],
+            "debug": false
+          },
+          "agency": {
+            "customs": ["agency-environment/lib/handlebars/customs/yamlExclude"]
+          }
+        }, {
+          "test": ".css$",
+          "loader": "style-loader!css-loader"
+        }, {
+          "test": ".(png|jpg|gif|svg|ttf|woff|eot)$",
+          "loader": "url-loader?limit=100000"
+        }]
+      },
+      "files": {
+        "src": ["./src/js/main.js"],
+        "dest": "<%= destination %>/js/app.js"
+      }
+    }, {
+      "name": "embed",
+
+      "entry": {
+        "picture": "./src/js/polyfills/picture",
+        "animationFrame": "./src/js/polyfills/animationFrame"
+      },
+
+      "plugins": [{
+        "script": "../webpack/plugins/dedupe"
+      }, {
+        "script": "../webpack/plugins/chunk",
+        "config": {
+          "main": "embed._main.js",
+          "packages": ["picture", "animationFrame"]
+        }
+      }, {
+        "script": "../webpack/plugins/uglify"
+      }],
+      "module": {
+        "preLoaders": [{
+          "test": ".js$",
+          "exclude": "node_modules",
+          "loader": "jshint-loader"
+        }]
+      },
+      "files": {
+        "src": ["./src/js/polyfills/animationFrame", "./src/js/polyfills/picture"],
+        "dest": "<%= destination %>/js/embed.[name].js",
+        "library": ["window", "[name]"],
+        "libraryTarget": "this"
+      }
+    }]
+  },
+  "zipcompress": {
+    "subtasks": [{
+      "name": "default",
+      "excludes": [],
+      "files": {
+        "src": ["<%= destination %>"],
+        "dest": "<%= destination %>"
+      }
+    }, {
+      "name": "banner",
+      "excludes": ["!<%= destination %>/**/fonts/**/*.{css,svg,woff2}"],
+      "files": {
+        "src": ["<%= destination %>/*", "!<%= destination %>/*.*"],
+        "dest": "<%= destination %>/compressed"
+      }
+    }]
+  }
 }

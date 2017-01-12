@@ -1,6 +1,6 @@
 {
 	"name": "agency-environment",
-	"version": "2.0.6",
+	"version": "2.0.7",
 	"description": "agency - frontend environment",
 	"homepage": "https://github.com/StephanGerbeth/agency-environment#readme",
 	"bugs": {
@@ -71,6 +71,7 @@
 		"url-loader": "0.5.6",
 		"webpack": "1.12.3",
     "webpack-bundle-analyzer": "1.5.2",
+		"webpack-lighthouse-plugin": "1.0.2",
 		"webpack-polyfills-plugin": "0.0.8",
 		"webpack-stream": "2.1.1"
 	}

@@ -3,5 +3,5 @@ module.exports = function(callback) {
   {{#each sources}}
       require.include("{{this}}");
   {{/each}}
-  callback(require.context('./', true));
+  callback(require);
 };

@@ -1,7 +1,7 @@
 "use strict";
-module.exports = function(callback) {
+
+module.exports = [
   {{#each sources}}
-      require.include("{{this}}");
+    {name: "{{this}}", id: require.resolve("{{this}}"), controller: require("{{this}}")}{{#unless @last}},{{/unless}}
   {{/each}}
-  callback(require);
-};
+];

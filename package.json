@@ -55,7 +55,7 @@
 		"lodash": "3.10.1",
 		"minimist": "1.2.0",
 		"mkdirp": "0.5.1",
-		"modernizr-loader": "0.0.4",
+		"modernizr-loader": "1.0.1",
     "optimize-js-plugin": "0.0.4",
 		"postcss-clearfix": "0.2.0",
 		"postcss-import": "7.1.3",

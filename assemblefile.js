@@ -1,6 +1,6 @@
 "use strict";
 
-var template = require('lodash/string/template');
+var template = require('lodash/template');
 var options = require('minimist')(process.argv.slice(2));
 var upath = require('upath');
 var serverConfig = JSON.parse(template(JSON.stringify(require(upath.join(process.cwd(), (options.serverConfig || './env/config/local.json')))))({'root': upath.join(process.cwd())}))[(options.env || 'development')];

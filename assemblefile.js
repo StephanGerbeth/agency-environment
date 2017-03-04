@@ -3,7 +3,7 @@
 var template = require('lodash/template');
 var upath = require('upath');
 var options = require('minimist')(process.argv.slice(2));
-var serverConfig = JSON.parse(template(JSON.stringify(require(upath.join(process.cwd(), options.serverConfig))))({'root': upath.join(process.cwd())}))[process.env.NODE_ENV];
+var serverConfig = require(process.cwd() + options.serverConfig);
 var gulpFileMap = JSON.parse(template(JSON.stringify(require(upath.join(process.cwd(), options.gulpFileMap))))({'destination': upath.join(serverConfig.dest), 'root': upath.join(process.cwd())}));
 
 var gulp = require('gulp');
@@ -20,10 +20,8 @@ gulp.task('sitemap', require('./lib/tasks/sitemap')('sitemap', gulpFileMap.sitem
 gulp.task('validate', require('./lib/tasks/validate')('validate', gulpFileMap.validate, serverConfig)());
 gulp.task('webpack', require('./lib/tasks/webpack')('webpack', gulpFileMap.webpack, serverConfig)());
 gulp.task('watch', function(cb) {
-    if(serverConfig.livereload) {
-        livereload.listen({
-            port: serverConfig.livereload.port
-        });
+    if(serverConfig.servers.livereload[process.env.NODE_ENV]) {
+        livereload.listen(serverConfig.servers.livereload.config);
     }
     cb();
 });

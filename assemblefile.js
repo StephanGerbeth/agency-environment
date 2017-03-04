@@ -9,23 +9,24 @@ var gulpFileMap = JSON.parse(template(JSON.stringify(require(upath.join(process.
 var gulp = require('gulp');
 var runSequence = require('run-sequence').use(gulp);
 var livereload = require('gulp-livereload');
+var watch = require(gulpFileMap.watch.config);
 
-gulp.task('clean', require('./lib/tasks/clean')('clean', gulpFileMap.clean, serverConfig));
-gulp.task('copy', require('./lib/tasks/copy')('copy', gulpFileMap.copy, serverConfig));
-gulp.task('fontmin', require('./lib/tasks/fontmin')('fontmin', gulpFileMap.fontmin, serverConfig));
-gulp.task('handlebars', require('./lib/tasks/handlebars')('handlebars', gulpFileMap.handlebars, serverConfig));
-gulp.task('postcss', require('./lib/tasks/postcss')('postcss', gulpFileMap.postcss, serverConfig));
+gulp.task('clean', require('./lib/tasks/clean')('clean', gulpFileMap.clean, watch));
+gulp.task('copy', require('./lib/tasks/copy')('copy', gulpFileMap.copy, watch));
+gulp.task('fontmin', require('./lib/tasks/fontmin')('fontmin', gulpFileMap.fontmin, watch));
+gulp.task('handlebars', require('./lib/tasks/handlebars')('handlebars', gulpFileMap.handlebars, watch, serverConfig));
+gulp.task('postcss', require('./lib/tasks/postcss')('postcss', gulpFileMap.postcss, watch, serverConfig.root));
 gulp.task('purecss', require('./lib/tasks/purecss')(gulpFileMap.purecss));
-gulp.task('sitemap', require('./lib/tasks/sitemap')('sitemap', gulpFileMap.sitemap, serverConfig));
-gulp.task('validate', require('./lib/tasks/validate')('validate', gulpFileMap.validate, serverConfig)());
-gulp.task('webpack', require('./lib/tasks/webpack')('webpack', gulpFileMap.webpack, serverConfig)());
+gulp.task('sitemap', require('./lib/tasks/sitemap')('sitemap', gulpFileMap.sitemap, watch));
+gulp.task('validate', require('./lib/tasks/validate')('validate', gulpFileMap.validate, watch)());
+gulp.task('webpack', require('./lib/tasks/webpack')('webpack', gulpFileMap.webpack, watch)());
 gulp.task('watch', function(cb) {
-    if(serverConfig.servers.livereload[process.env.NODE_ENV]) {
-        livereload.listen(serverConfig.servers.livereload.config);
+    if(watch[process.env.NODE_ENV]) {
+        livereload.listen(watch.config);
     }
     cb();
 });
-gulp.task('zip-compress', require('./lib/tasks/zip-compress')('zip-compress', gulpFileMap.zipcompress, serverConfig));
+gulp.task('zip-compress', require('./lib/tasks/zip-compress')('zip-compress', gulpFileMap.zipcompress, watch));
 
 gulp.task('build', function(callback) {
     runSequence('prebuild', 'webpack:app', ['validate', 'sitemap'], 'zip-compress:default', callback);

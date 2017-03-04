@@ -3,7 +3,7 @@
 var template = require('lodash/template');
 var options = require('minimist')(process.argv.slice(2));
 var upath = require('upath');
-var serverConfig = JSON.parse(template(JSON.stringify(require(upath.join(process.cwd(), (options.serverConfig || './env/config/local.json')))))({'root': upath.join(process.cwd())}))[(options.env || 'development')];
+var serverConfig = JSON.parse(template(JSON.stringify(require(upath.join(process.cwd(), (options.serverConfig || './env/config/local.json')))))({'root': upath.join(process.cwd())}))[process.env.NODE_ENV];
 var tasksConfig = JSON.parse(template(JSON.stringify(require(upath.join(process.cwd(), options.configTasks))))({'destination': upath.join(serverConfig.dest), 'root': upath.join(process.cwd())}));
 
 var gulp = require('gulp');

@@ -17,6 +17,7 @@ gulp.task('handlebars', require('./lib/tasks/handlebars')('handlebars', tasksCon
 gulp.task('postcss', require('./lib/tasks/postcss')('postcss', tasksConfig.postcss, serverConfig));
 gulp.task('purecss', require('./lib/tasks/purecss')(tasksConfig.purecss));
 gulp.task('sitemap', require('./lib/tasks/sitemap')('sitemap', tasksConfig.sitemap, serverConfig));
+gulp.task('validate', require('./lib/tasks/validate')('validate', tasksConfig.validate, serverConfig)());
 gulp.task('webpack', require('./lib/tasks/webpack')('webpack', tasksConfig.webpack, serverConfig)());
 gulp.task('watch', function(cb) {
     if(serverConfig.livereload) {
@@ -29,11 +30,11 @@ gulp.task('watch', function(cb) {
 gulp.task('zip-compress', require('./lib/tasks/zip-compress')('zip-compress', tasksConfig.zipcompress, serverConfig));
 
 gulp.task('build', function(callback) {
-    runSequence('prebuild', 'webpack:app', 'zip-compress:default', callback);
+    runSequence('prebuild', 'webpack:app', ['validate', 'sitemap'], 'zip-compress:default', callback);
 });
 
 gulp.task('prebuild', function(callback) {
-    runSequence('clean', ['copy', 'fontmin', 'webpack:embed', 'purecss'], 'postcss', 'handlebars', ['sitemap'], callback);
+    runSequence('clean', ['copy', 'fontmin', 'webpack:embed', 'purecss'], 'postcss', 'handlebars', callback);
 });
 
 gulp.task('build-banner', function(callback) {

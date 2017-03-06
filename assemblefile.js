@@ -33,7 +33,7 @@ gulp.task('purecss', require('./lib/tasks/purecss')(getJSON(process.cwd() + task
 
 
 gulp.task('build', function(callback) {
-    runSequence('prebuild', 'webpack:app', ['validate', 'sitemap'], 'zip-compress:default', callback);
+    runSequence('prebuild', 'webpack:app', ['validate', 'sitemap'], 'zip:default', callback);
 });
 
 gulp.task('prebuild', function(callback) {

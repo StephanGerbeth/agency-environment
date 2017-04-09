@@ -29,15 +29,12 @@ files.forEach(function(file) {
     createTask(getJSON(file));
 });
 
-gulp.task('purecss', require('./lib/tasks/purecss')(getJSON(process.cwd() + tasksDir + 'purecss/deprecated_map.json')));
-
-
 gulp.task('build', function(callback) {
     runSequence('prebuild', 'webpack:app', ['validate', 'sitemap'], 'zip:default', callback);
 });
 
 gulp.task('prebuild', function(callback) {
-    runSequence('clean', ['copy', 'fontmin', 'webpack:embed', 'purecss'], 'postcss', 'handlebars', callback);
+    runSequence('clean', ['copy', 'fontmin', 'webpack:embed', 'grid'], 'postcss', 'handlebars', callback);
 });
 
 gulp.task('build-banner', function(callback) {

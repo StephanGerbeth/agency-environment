@@ -1,45 +1,54 @@
 "use strict";
 
-var template = require('lodash/string/template');
-var options = require('minimist')(process.argv.slice(2));
+var template = require('lodash/template');
 var upath = require('upath');
-var serverConfig = JSON.parse(template(JSON.stringify(require(upath.join(process.cwd(), (options.serverConfig || './env/config/local.json')))))({'root': upath.join(process.cwd())}))[(options.env || 'development')];
-var tasksConfig = JSON.parse(template(JSON.stringify(require(upath.join(process.cwd(), options.configTasks))))({'destination': upath.join(serverConfig.dest), 'root': upath.join(process.cwd())}));
+var options = require('minimist')(process.argv.slice(2));
+var serverConfig = require(process.cwd() + options.serverConfig);
+var tasksDir = options.gulpTaskConfig;
 
 var gulp = require('gulp');
 var runSequence = require('run-sequence').use(gulp);
 var livereload = require('gulp-livereload');
 
-gulp.task('clean', require('./lib/tasks/clean')('clean', tasksConfig.clean, serverConfig));
-gulp.task('copy', require('./lib/tasks/copy')('copy', tasksConfig.copy, serverConfig));
-gulp.task('fontmin', require('./lib/tasks/fontmin')('fontmin', tasksConfig.fontmin, serverConfig));
-gulp.task('handlebars', require('./lib/tasks/handlebars')('handlebars', tasksConfig.handlebars, serverConfig));
-gulp.task('postcss', require('./lib/tasks/postcss')('postcss', tasksConfig.postcss, serverConfig));
-gulp.task('purecss', require('./lib/tasks/purecss')(tasksConfig.purecss));
-gulp.task('sitemap', require('./lib/tasks/sitemap')('sitemap', tasksConfig.sitemap, serverConfig));
-gulp.task('webpack', require('./lib/tasks/webpack')('webpack', tasksConfig.webpack, serverConfig)());
+
+var watch = require(process.cwd() + tasksDir + 'watch/config');
 gulp.task('watch', function(cb) {
-    if(serverConfig.livereload) {
-        livereload.listen({
-            port: serverConfig.livereload.port
-        });
+    if(watch[process.env.NODE_ENV]) {
+        livereload.listen(watch.config);
     }
     cb();
 });
-gulp.task('zip-compress', require('./lib/tasks/zip-compress')('zip-compress', tasksConfig.zipcompress, serverConfig));
+
+var glob = require('glob');
+var files = glob.sync('**/map.json', {
+    cwd: process.cwd() + tasksDir,
+    root: '/',
+    absolute: true
+});
+files.forEach(function(file) {
+    createTask(getJSON(file));
+});
 
 gulp.task('build', function(callback) {
-    runSequence('prebuild', 'webpack:app', 'zip-compress:default', callback);
+    runSequence('prebuild', 'webpack:app', ['validate', 'sitemap'], 'zip:default', callback);
 });
 
 gulp.task('prebuild', function(callback) {
-    runSequence('clean', ['copy', 'fontmin', 'webpack:embed', 'purecss'], 'postcss', 'handlebars', ['sitemap'], callback);
+    runSequence('clean', ['copy', 'fontmin', 'webpack:embed', 'grid'], 'postcss', 'handlebars', callback);
 });
 
 gulp.task('build-banner', function(callback) {
-    runSequence('clean', ['copy', 'fontmin', 'webpack:embed', 'webpack:app', 'postcss'], 'handlebars', 'zip-compress:banner', callback);
+    runSequence('clean', ['copy', 'fontmin', 'webpack:embed', 'webpack:app', 'postcss'], 'handlebars', 'zip:banner', callback);
 });
 
 gulp.task('prebuild-banner', function(callback) {
     runSequence('clean', ['copy', 'fontmin', 'webpack:embed', 'postcss'], 'handlebars', callback);
 });
+
+function createTask(options) {
+    gulp.task(options.name, require(options.task)(options.name, options.config, watch));
+}
+
+function getJSON(path) {
+    return JSON.parse(template(JSON.stringify(require(path)))({'destination': upath.join(serverConfig.dest), 'root': upath.join(process.cwd())}));
+}

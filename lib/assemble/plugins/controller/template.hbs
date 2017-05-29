@@ -1,7 +1,0 @@
-"use strict";
-
-module.exports = [
-  {{#each sources}}
-    {name: "{{this}}", id: require.resolve("{{this}}"), controller: require("{{this}}")}{{#unless @last}},{{/unless}}
-  {{/each}}
-];

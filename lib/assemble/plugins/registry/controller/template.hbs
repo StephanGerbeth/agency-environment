@@ -1,0 +1,8 @@
+"use strict";
+
+var lib = [];
+{{#each sources}}
+import component{{{@index}}} from "{{{this}}}";
+lib.push({name: '{{{this}}}', controller: (component{{{@index}}})});
+{{/each}}
+export default lib;

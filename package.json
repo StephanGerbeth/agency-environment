@@ -1,6 +1,6 @@
 {
 	"name": "agency-environment",
-	"version": "2.1.0",
+  "version": "4.0.0",
 	"description": "agency - frontend environment",
 	"homepage": "https://github.com/StephanGerbeth/agency-environment#readme",
 	"bugs": {

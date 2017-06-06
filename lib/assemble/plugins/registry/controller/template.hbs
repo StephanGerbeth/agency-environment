@@ -2,7 +2,15 @@
 
 var lib = [];
 {{#each sources}}
-import component{{{@index}}} from "{{{this}}}";
-lib.push({name: '{{{this}}}', controller: (component{{{@index}}})});
+{{#if chunk}}
+lib.push({name: '{{{name}}}', chunk: true, controller: function (cb) {
+    require.ensure([], function(require) {
+        cb(require('{{{controller}}}').default);
+    }, '{{{chunk}}}');
+}});
+{{else}}
+import component{{{@index}}} from "{{{controller}}}";
+lib.push({name: '{{{name}}}', controller: (component{{{@index}}})});
+{{/if}}
 {{/each}}
 export default lib;
